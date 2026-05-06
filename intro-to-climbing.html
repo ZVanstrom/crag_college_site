@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intro to Outdoor Climbing | Crag College Guided Rock Climbing</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        .badge { background: #16a34a; }
+        .description-section { padding-top: 1.5rem; }
+    </style>
+</head>
+<body>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <button class="lightbox-btn" onclick="lightboxPrev(event)">&#8592;</button>
+        <div class="lightbox-inner">
+            <img id="lightboxImg" src="" alt="Guided climbing photo at Red River Gorge">
+        </div>
+        <button class="lightbox-btn" onclick="lightboxNext(event)">&#8594;</button>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
+    </div>
+
+    <nav data-quote="#quote"></nav>
+    <script src="js/nav.js"></script>
+
+    <!-- ── PHOTO CAROUSEL ── -->
+    <section class="carousel-section" style="padding-top: 7rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.75rem; color: white; margin-bottom: 0.75rem;">Intro to Outdoor Climbing</h1>
+            <p style="color: rgba(255,255,255,0.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.25rem;">Start your climbing journey with an AMGA-certified guide. We cover top-rope movement, figure-eight knots, and belay basics on real rock at the Red River Gorge.</p>
+            <a href="#quote" class="price-tag" style="text-decoration: none; color: white; display: inline-block; transition: opacity 0.2s;">Starting at $150/person ↓</a>
+        </div>
+        <div class="carousel-wrapper">
+            <button class="carousel-btn prev" onclick="carouselMove(-1)">&#8592;</button>
+            <div class="carousel-track-container">
+                <div class="carousel-track" id="carouselTrack">
+                    <div class="carousel-slide" onclick="openLightbox(0)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0208.jpg" alt="Beginner climber on top-rope at Red River Gorge with AMGA guide"></div>
+                    <div class="carousel-slide" onclick="openLightbox(1)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0210.jpg" alt="Rock climber learning movement technique at the Red"></div>
+                    <div class="carousel-slide" onclick="openLightbox(2)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0212.jpg" alt="Guided top-rope climbing session at Red River Gorge Kentucky"></div>
+                    <div class="carousel-slide" onclick="openLightbox(3)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0214.jpg" alt="Crag College guide instructing beginner climber on route"></div>
+                    <div class="carousel-slide" onclick="openLightbox(4)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0216.jpg" alt="Climber belaying on top-rope at permitted crag Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(5)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0218.jpg" alt="Beginner practicing figure-eight knot on climbing harness"></div>
+                    <div class="carousel-slide" onclick="openLightbox(6)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0220.jpg" alt="Climber sending first outdoor route at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(7)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0222.jpg" alt="Single-pitch guided climbing on sandstone at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(8)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0224.jpg" alt="Climber working on footwork technique at the crag"></div>
+                    <div class="carousel-slide" onclick="openLightbox(9)"><img src="photos/11-22-25%20david%20climbing%20day/DSC_0226.jpg" alt="Guided rock climbing at Ash Branch Red River Gorge"></div>
+                </div>
+            </div>
+            <button class="carousel-btn next" onclick="carouselMove(1)">&#8594;</button>
+            <div class="carousel-thumbs" id="carouselThumbs">
+                <img class="carousel-thumb active" src="photos/11-22-25%20david%20climbing%20day/DSC_0208.jpg" onclick="carouselGoTo(0)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0210.jpg" onclick="carouselGoTo(1)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0212.jpg" onclick="carouselGoTo(2)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0214.jpg" onclick="carouselGoTo(3)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0216.jpg" onclick="carouselGoTo(4)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0218.jpg" onclick="carouselGoTo(5)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0220.jpg" onclick="carouselGoTo(6)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0222.jpg" onclick="carouselGoTo(7)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0224.jpg" onclick="carouselGoTo(8)" alt="">
+                <img class="carousel-thumb"        src="photos/11-22-25%20david%20climbing%20day/DSC_0226.jpg" onclick="carouselGoTo(9)" alt="">
+            </div>
+            <div class="carousel-counter" id="carouselCounter">1 / 10</div>
+        </div>
+    </section>
+
+    <!-- ── QUOTE WIDGET ── -->
+    <section id="quote" class="quote-widget-section">
+        <div class="iq-picker">
+            <div class="iq-card" data-camper="intro" data-name="Intro to Outdoor Climbing">
+                <img src="photos/11-22-25%20david%20climbing%20day/DSC_0208.jpg" alt="Beginner climber on top-rope at Red River Gorge">
+                <div class="iq-card-info">
+                    <div class="iq-card-name">Intro to Climbing</div>
+                    <div class="iq-card-price">From $150/person</div>
+                </div>
+            </div>
+            <div class="iq-card" data-camper="sport-lead" data-name="Sport Lead Climbing Clinic">
+                <img src="photos/April%2C%20Zee%20%7C%2003%2021%2022%2026/IMG_0893.JPG" alt="Climber on sport lead route at Red River Gorge">
+                <div class="iq-card-info">
+                    <div class="iq-card-name">Sport Lead Clinic</div>
+                    <div class="iq-card-price">From $175/person</div>
+                </div>
+            </div>
+            <div class="iq-card" data-camper="trad-anchor" data-name="Trad &amp; Anchor Building">
+                <img src="photos/RRG%204-10-4-12/DSC_2409.jpg" alt="Trad gear placement instruction at Red River Gorge">
+                <div class="iq-card-info">
+                    <div class="iq-card-name">Trad &amp; Anchors</div>
+                    <div class="iq-card-price">From $200/person</div>
+                </div>
+            </div>
+        </div>
+        <div id="iq-widget-wrap" style="max-width:780px;margin:0 auto;">
+            <div id="iq-widget"></div>
+        </div>
+    </section>
+
+    <section class="description-section">
+        <div class="container">
+            <div class="description-content">
+                <h2>Learn to Climb on Real Rock</h2>
+                <p>The Intro to Outdoor Climbing program is your first day outside on real stone. We leave the gym behind and head to permitted crags in the Red River Gorge, where you'll learn how to move on rock, tie into a rope, and belay your partner — all under the direct supervision of an AMGA Single Pitch Instructor.</p>
+
+                <div class="feature-cards">
+                    <div class="feature-card">
+                        <h3>🧗 What You'll Learn</h3>
+                        <ul>
+                            <li>Rock movement fundamentals (footwork, balance, body positioning)</li>
+                            <li>Tying a figure-eight follow-through</li>
+                            <li>Top-rope belay with a GriGri or ATC</li>
+                            <li>Verbal commands and partner communication</li>
+                            <li>Route reading and beta</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>🎒 What to Bring</h3>
+                        <ul>
+                            <li>Minimum 2 liters of water</li>
+                            <li>Weather-appropriate layers</li>
+                            <li>Crag lunch and snacks</li>
+                            <li>Climbing shoes (or rental — see add-ons)</li>
+                            <li>Helmet (provided if needed)</li>
+                            <li>Sleeping system rated to 40°F if camping</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>✅ What's Provided</h3>
+                        <ul>
+                            <li>Ropes and all anchor equipment</li>
+                            <li>Harness (optional gear rental)</li>
+                            <li>GriGri or ATC belay device</li>
+                            <li>Helmet (if needed)</li>
+                            <li>AMGA-certified instruction throughout</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>📍 Where We Climb</h3>
+                        <ul>
+                            <li>Ash Branch (Powell County)</li>
+                            <li>RRGCC land (Red River Gorge Climbers' Coalition)</li>
+                            <li>Muir Valley (private preserve)</li>
+                            <li>Crag chosen based on conditions &amp; level</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>👤 Prerequisites</h3>
+                        <ul>
+                            <li>None — this is your first day outside</li>
+                            <li>No gym climbing required</li>
+                            <li>All ages welcome (youth with guardian)</li>
+                            <li>Reasonable physical fitness recommended</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card">
+                        <h3>⏱️ Duration &amp; Group Size</h3>
+                        <ul>
+                            <li>Half day: ~4 hours</li>
+                            <li>Full day: 7–8 hours</li>
+                            <li>Max 4 participants per guide</li>
+                            <li>Private and semi-private sessions available</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p><strong>📍 Meetup:</strong> Miguel's Pizza campground, Slade, KY 40376 — the unofficial base camp of the Red River Gorge</p>
+                    <p><strong>🏕️ Camping:</strong> On-site camping available at Miguel's. Breakfast and dinner can be purchased there. Bring a sleep system rated to 40°F/4°C.</p>
+                    <p><strong>🎯 Best For:</strong> Complete beginners, gym climbers going outside for the first time, families, and groups looking for a memorable first experience on rock</p>
+                </div>
+
+                <div class="tech-details-wrapper">
+                    <h3 style="font-family:'Inter',sans-serif; font-size:1.05rem; font-weight:700; color:var(--dark); padding:1.1rem 1.5rem 0.75rem; margin:0;">📋 Trip Details</h3>
+                    <div class="specs-grid" style="padding: 0 1.5rem 1.5rem;">
+                        <div class="spec-card"><div class="label">Duration</div><div class="value">Half / Full Day</div></div>
+                        <div class="spec-card"><div class="label">Max Group Size</div><div class="value">4</div></div>
+                        <div class="spec-card"><div class="label">Difficulty</div><div class="value">Beginner</div></div>
+                        <div class="spec-card"><div class="label">Prerequisites</div><div class="value">None</div></div>
+                        <div class="spec-card"><div class="label">Permitted Crags</div><div class="value">Ash Branch / RRGCC / Muir Valley</div></div>
+                        <div class="spec-card"><div class="label">Certification</div><div class="value">AMGA SPI · WFR</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking" class="booking-section">
+        <div class="container">
+            <div class="booking-cta">
+                <h2>Book Your First Climb</h2>
+                <p>Ready to get on real rock? Reserve your spot for an Intro to Outdoor Climbing session at the Red River Gorge.</p>
+                <div style="margin-top: 2rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.25); border-radius: 10px; padding: 1.25rem 1.75rem; max-width: 480px; margin-left: auto; margin-right: auto;">
+                    <p style="font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem;">📧 Book directly with us.</p>
+                    <p style="font-size: 0.9rem; opacity: 0.85; margin-bottom: 0.75rem;">Email or call to confirm your dates, group size, and program. We'll take care of the rest.</p>
+                    <a href="mailto:cragcollege@gmail.com" style="display: inline-block; background: white; color: var(--primary); font-weight: 600; font-size: 0.9rem; padding: 0.6rem 1.4rem; border-radius: 6px; text-decoration: none; transition: opacity 0.2s;">Email Us to Book →</a>
+                    <p style="margin-top: 0.85rem; font-size: 0.88rem; opacity: 0.75;">or call <a href="tel:+12602059145" style="color: white; text-decoration: underline;">(260) 205-9145</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="contact-info">
+            <a href="mailto:cragcollege@gmail.com">cragcollege@gmail.com</a>
+            <a href="tel:+12602059145">(260) 205-9145</a>
+        </div>
+        <p>© 2026 Crag College Guides LLC | Red River Gorge, Kentucky</p>
+    </footer>
+
+    <script src="js/carousel.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBfbiTv37Tqd0AqFt4WPsSrSq5dbpa7IY&libraries=places&loading=async" async defer></script>
+    <script src="js/quote-widget.js"></script>
+    <script>
+        const IQ_CONFIGS = {
+            'intro': {
+                camper:   { name: 'Intro to Outdoor Climbing', weeknightRate: 150, weekendRate: 175, towInsurancePerDay: 0 },
+                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                addons: [
+                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
+                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                ],
+                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
+            },
+            'sport-lead': {
+                camper:   { name: 'Sport Lead Climbing Clinic', weeknightRate: 175, weekendRate: 200, towInsurancePerDay: 0 },
+                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                addons: [
+                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
+                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                ],
+                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
+            },
+            'trad-anchor': {
+                camper:   { name: 'Trad & Anchor Building', weeknightRate: 200, weekendRate: 225, towInsurancePerDay: 0 },
+                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                addons: [
+                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
+                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                ],
+                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
+            },
+        };
+
+        let iqWidget = null;
+
+        function selectCamper(card, scroll) {
+            const key = card.dataset.camper;
+            document.querySelectorAll('.iq-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            const wrap = document.getElementById('iq-widget-wrap');
+            const widgetEl = document.getElementById('iq-widget');
+            widgetEl.innerHTML = '';
+            wrap.hidden = false;
+            if (scroll) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            iqWidget = new QuoteWidget({ container: '#iq-widget', ...IQ_CONFIGS[key] });
+        }
+
+        document.querySelectorAll('.iq-card').forEach(card => {
+            card.addEventListener('click', () => selectCamper(card, true));
+        });
+
+        selectCamper(document.querySelector('.iq-card[data-camper="intro"]'), false);
+    </script>
+</body>
+</html>

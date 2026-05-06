@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crag College Guided Rock Climbing | Red River Gorge, KY</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/shared.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        html { scroll-behavior: smooth; }
+
+        /* Index-specific overrides */
+        section { padding: 5rem 2rem; }
+        .section-title { font-size: 2.5rem; text-align: center; }
+
+        /* Hero */
+        .hero {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 6rem 2rem 4rem;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 58, 47, 0.75) 0%, rgba(45, 90, 71, 0.65) 100%);
+            z-index: -1;
+        }
+
+        .hero-content h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .hero-btn:hover {
+            background: #b45309;
+            transform: translateY(-2px);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #0f2218;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Programs Grid */
+        #programs { background: #b2c4b0; }
+
+        .campers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .camper-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.13), 0 2px 6px rgba(0,0,0,0.07);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .camper-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 18px 48px rgba(0,0,0,0.18), 0 4px 12px rgba(0,0,0,0.09);
+        }
+
+        .camper-image {
+            height: 245px;
+            background: linear-gradient(135deg, var(--primary), #3d7a5f);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            overflow: hidden;
+        }
+
+        .camper-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .camper-info {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .camper-info h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .camper-info .year {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .camper-info .year .card-price-tag {
+            margin-left: -10px;
+        }
+
+        .camper-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .spec-tag {
+            background: #d0ddd3;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #3a5c45;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+        }
+
+        .camper-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .camper-info p:not(.year) {
+            flex: 1;
+        }
+
+        .camper-btn {
+            display: block;
+            background: var(--accent);
+            color: white;
+            padding: 0.7rem 1.25rem;
+            border-radius: 8px;
+            border: 2px solid #b45309;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            text-align: center;
+            margin-top: 1rem;
+            box-shadow: 0 2px 8px rgba(217,119,6,0.3);
+            letter-spacing: 0.01em;
+        }
+
+        .camper-btn:hover {
+            background: #b45309;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 16px rgba(217,119,6,0.4);
+        }
+
+        /* Instant Quote section */
+        #instant-quote {
+            background: #f1f5f9;
+        }
+
+        #iq-widget-wrap {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        /* About */
+        .about {
+            background: linear-gradient(135deg, #0f2920 0%, var(--primary) 50%, #1e4d3a 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about::before {
+            content: "";
+            position: absolute;
+            top: -80px; right: -80px;
+            width: 380px; height: 380px;
+            border-radius: 50%;
+            background: rgba(217,119,6,0.08);
+            pointer-events: none;
+        }
+
+        .about::after {
+            content: "";
+            position: absolute;
+            bottom: -100px; left: -60px;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+            pointer-events: none;
+        }
+
+        .about .section-title {
+            color: white;
+            text-align: center;
+            font-size: 2.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .about-eyebrow {
+            text-align: center;
+            color: var(--accent);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .about-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .about-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(4px);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .about-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .about-card-label {
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.85rem;
+        }
+
+        .about-card p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .about-promise-card {
+            background: var(--accent);
+            border: none;
+        }
+
+        .about-promise-card .about-card-label {
+            color: rgba(255,255,255,0.75);
+        }
+
+        .about-promise-card p {
+            color: white;
+            font-weight: 500;
+        }
+
+        @media (max-width: 900px) {
+            .about-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Location */
+        .location-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .location-text h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .location-text p {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .location-features {
+            list-style: none;
+        }
+
+        .location-features li {
+            padding: 0.5rem 0;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .location-features li::before {
+            content: "✓";
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .location-map {
+            border-radius: 12px;
+            height: 480px;
+            overflow: hidden;
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* FAQ */
+        .faq {
+            background: #b2c4b0;
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .faq-item h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        .faq-item p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        .process-disclaimers {
+            margin-top: 2.5rem; text-align: center; display: flex;
+            flex-direction: column; gap: 0.6rem; align-items: center;
+        }
+        .process-disclaimers p {
+            font-size: 0.88rem; color: var(--gray); margin: 0;
+            max-width: 560px; line-height: 1.6;
+        }
+        .process-disclaimers img { vertical-align: middle; margin-right: 3px; }
+        .process-disclaimers strong { color: var(--dark); }
+
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d5a47 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .cta-btn:hover {
+            background: #b45309;
+            transform: translateY(-2px);
+        }
+
+        /* Process */
+        .process { background: #f1f5f9; }
+
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .process-step {
+            background: white;
+            border-radius: 14px;
+            padding: 1.75rem 1.5rem;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            border-top: 4px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .process-step-num {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .process-step h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0;
+        }
+
+        .process-step p {
+            font-size: 0.9rem;
+            color: var(--gray);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        .process-step-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            background: #f8fafc;
+            color: var(--gray);
+            border: 1px solid #e2e8f0;
+            width: fit-content;
+            margin-top: auto;
+        }
+        .process-step-badge img {
+            width: 13px;
+            height: 13px;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .location-content { grid-template-columns: 1fr; }
+            .campers-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav data-quote="#instant-quote"></nav>
+    <script src="js/nav.js"></script>
+
+    <!-- Hero -->
+    <section class="hero">
+        <img class="hero-bg" src="photos/11-22-25%20david%20climbing%20day/DSC_0215.jpg" alt="Rock climber on route at the Red River Gorge, Kentucky">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Crag College Guided Rock Climbing</h1>
+            <p>AMGA-certified single-pitch instruction at the Red River Gorge. Top-rope, sport lead, and trad climbing guided by Zakyre Vanstrom — SPI &amp; Wilderness First Responder certified.</p>
+            <a href="#programs" class="hero-btn">Explore Our Programs</a>
+        </div>
+    </section>
+
+    <!-- Instant Quote -->
+    <section id="instant-quote">
+        <h2 class="section-title">Get an Instant Quote</h2>
+        <p class="section-subtitle">Choose a program to get started. Fill in your dates and details, and we'll reach out to confirm availability and lock in your trip.</p>
+
+        <div class="iq-picker">
+            <div class="iq-card" data-camper="intro" data-name="Intro to Outdoor Climbing">
+                <img src="photos/11-22-25%20david%20climbing%20day/DSC_0208.jpg" alt="Beginner climber on top-rope at Red River Gorge">
+                <div class="iq-card-info">
+                    <div class="iq-card-name">Intro to Climbing</div>
+                    <div class="iq-card-price">From $150/person</div>
+                </div>
+            </div>
+            <div class="iq-card" data-camper="sport-lead" data-name="Sport Lead Climbing Clinic">
+                <img src="photos/April%2C%20Zee%20%7C%2003%2021%2022%2026/IMG_0893.JPG" alt="Climber clipping bolts on a sport route at Red River Gorge">
+                <div class="iq-card-info">
+                    <div class="iq-card-name">Sport Lead Clinic</div>
+                    <div class="iq-card-price">From $175/person</div>
+                </div>
+            </div>
+            <div class="iq-card" data-camper="trad-anchor" data-name="Trad &amp; Anchor Building">
+                <img src="photos/RRG%204-10-4-12/DSC_2409.jpg" alt="Guide demonstrating trad gear placement at the Red River Gorge">
+                <div class="iq-card-info">
+                    <div class="iq-card-name">Trad &amp; Anchors</div>
+                    <div class="iq-card-price">From $200/person</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="iq-widget-wrap" hidden>
+            <div id="iq-widget"></div>
+        </div>
+
+        <p class="iq-submit-note">When you submit the quote form, it goes directly to the Crag College team. We'll follow up by email, phone, or text depending on your preference to confirm availability and finalize your booking.</p>
+    </section>
+
+    <!-- Programs -->
+    <section id="programs">
+        <h2 class="section-title">Our Programs</h2>
+        <p class="section-subtitle">Three guided programs designed to build real skills on real rock. All instruction takes place at permitted crags in the Red River Gorge under AMGA-certified guidance.</p>
+
+        <div class="campers-grid">
+            <!-- Program 1 -->
+            <div class="camper-card">
+                <div class="camper-image">
+                    <img src="photos/11-22-25%20david%20climbing%20day/DSC_0208.jpg" alt="Beginner climber learning top-rope technique at Red River Gorge">
+                </div>
+                <div class="camper-info">
+                    <p class="year"><span class="card-price-tag">From $150/person</span> Half or Full Day</p>
+                    <h3>Intro to Outdoor Climbing</h3>
+                    <div class="camper-specs">
+                        <span class="spec-tag">All Levels</span>
+                        <span class="spec-tag">Top-Rope</span>
+                        <span class="spec-tag">No Experience Needed</span>
+                    </div>
+                    <p>Perfect first day on rock. We cover movement, figure-eight knots, and belaying on a top-rope at permitted crags in the Red River Gorge.</p>
+                    <a href="intro-to-climbing.html" class="camper-btn">Explore Intro to Climbing</a>
+                </div>
+            </div>
+
+            <!-- Program 2 -->
+            <div class="camper-card">
+                <div class="camper-image">
+                    <img src="photos/April%2C%20Zee%20%7C%2003%2021%2022%2026/IMG_0893.JPG" alt="Climber practicing lead climbing on sport route at Red River Gorge">
+                </div>
+                <div class="camper-info">
+                    <p class="year"><span class="card-price-tag">From $175/person</span> Full Day</p>
+                    <h3>Sport Lead Climbing Clinic</h3>
+                    <div class="camper-specs">
+                        <span class="spec-tag">Beginner–Intermediate</span>
+                        <span class="spec-tag">Lead Climbing</span>
+                        <span class="spec-tag">RRGCC &amp; Muir Valley</span>
+                    </div>
+                    <p>Mock leading, clipping bolts, falling safely on lead, and GriGri/ATC technique. Permitted on RRGCC land and Muir Valley.</p>
+                    <a href="sport-lead-clinic.html" class="camper-btn">Explore Sport Lead Clinic</a>
+                </div>
+            </div>
+
+            <!-- Program 3 -->
+            <div class="camper-card">
+                <div class="camper-image">
+                    <img src="photos/RRG%204-10-4-12/DSC_2409.jpg" alt="Guide teaching trad gear placement and anchor building at Red River Gorge">
+                </div>
+                <div class="camper-info">
+                    <p class="year"><span class="card-price-tag">From $200/person</span> Full Day</p>
+                    <h3>Trad &amp; Anchor Building</h3>
+                    <div class="camper-specs">
+                        <span class="spec-tag">Intermediate</span>
+                        <span class="spec-tag">Trad / Anchors</span>
+                        <span class="spec-tag">Ash Branch</span>
+                    </div>
+                    <p>Cam and nut placement, evaluating natural features, and building redundant equalized anchors. Ash Branch and select RRG venues.</p>
+                    <a href="trad-anchor-building.html" class="camper-btn">Explore Trad &amp; Anchors</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about">
+        <div class="about-content">
+            <p class="about-eyebrow">Who We Are</p>
+            <h2 class="section-title">About Crag College</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <p class="about-card-label">Our Guide</p>
+                    <p>Crag College Guided Rock Climbing is led by Zakyre Vanstrom, a professional rock climbing guide based at the Red River Gorge in Kentucky. Zakyre has guided clients across all experience levels — from first-timers to climbers refining lead technique — at permitted crags throughout the RRG.</p>
+                </div>
+                <div class="about-card about-promise-card">
+                    <p class="about-card-label">Our Promise</p>
+                    <p>Every trip prioritizes safety, education, and Leave No Trace stewardship. You'll leave with real skills, not just a cool experience. We cap group sizes to keep instruction personal, and we're always focused on building your independence as a climber.</p>
+                </div>
+                <div class="about-card">
+                    <p class="about-card-label">Credentials &amp; Insurance</p>
+                    <p>
+                        <strong style="color:white;">AMGA SPI</strong> — American Mountain Guides Association Single Pitch Instructor<br><br>
+                        <strong style="color:white;">WFR</strong> — Wilderness First Responder, including CPR/AED and emergency management<br><br>
+                        <strong style="color:white;">Fully Insured</strong> — Licensed and insured for professional guiding operations on Ash Branch, RRGCC land, and Muir Valley
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Everything you need to know before booking a guided trip.</p>
+
+        <div class="faq-list">
+            <div class="faq-item">
+                <h3>Where do you guide?</h3>
+                <p>We are permitted to operate on Ash Branch, RRGCC (Red River Gorge Climbers' Coalition) land, and Muir Valley — three of the best climbing venues in the Red River Gorge. The specific crag on your trip day will be chosen based on conditions, group level, and what's available.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Do I need prior experience?</h3>
+                <p>Not for the Intro to Outdoor Climbing program — it's designed for complete beginners with zero outdoor experience. The Sport Lead Clinic requires comfort on top-rope. The Trad &amp; Anchor Building course assumes you're already comfortable leading sport routes. Each program page has full prerequisite details.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What gear do I need to bring?</h3>
+                <div class="faq-included-list">
+                    <ul style="list-style: disc; padding-left: 1.25rem; color: var(--gray); line-height: 2;">
+                        <li>Minimum 2 liters of water</li>
+                        <li>Weather-appropriate clothing (layers)</li>
+                        <li>Crag lunch and snacks</li>
+                        <li>Climbing shoes <span style="font-size: 0.85rem; color: #999; font-weight: 400;">(rental available)</span></li>
+                        <li>Climbing helmet <span style="font-size: 0.85rem; color: #999; font-weight: 400;">(provided if needed)</span></li>
+                        <li>Sleeping system rated to 40°F <span style="font-size: 0.85rem; color: #999; font-weight: 400;">(if camping overnight)</span></li>
+                    </ul>
+                </div>
+                <p style="margin-top: 1rem;">Just show up ready to climb — we handle the rest.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What gear is provided?</h3>
+                <ul style="list-style: disc; padding-left: 1.25rem; color: var(--gray); line-height: 2; margin-top: 0.75rem;">
+                    <li>Ropes (all primary safety and anchor equipment)</li>
+                    <li>Harness &amp; belay device (GriGri or ATC)</li>
+                    <li>Quickdraws &amp; PAS</li>
+                    <li>Trad gear (cams &amp; nuts) for the Trad &amp; Anchor course</li>
+                </ul>
+            </div>
+            <div class="faq-item">
+                <h3>Where do we meet?</h3>
+                <p>The default meetup is Miguel's Pizza campground in Slade, KY — the unofficial base camp of the Red River Gorge. Camping is available on-site with breakfast and dinner at Miguel's. The exact crag meetup will be confirmed before your trip day.</p>
+            </div>
+            <div class="faq-item">
+                <h3>What is your cancellation policy?</h3>
+                <p>We offer full refunds for cancellations made 14+ days before your trip. Cancellations within 14 days receive a 50% refund or full credit toward a future booking.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Are you certified and insured?</h3>
+                <p>Yes. Zakyre Vanstrom holds an AMGA Single Pitch Instructor (SPI) certification and a Wilderness First Responder (WFR) certification including CPR/AED. Crag College Guides LLC is fully insured for professional guiding operations and permitted to operate on Ash Branch, RRGCC land, and Muir Valley.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process" class="process">
+        <h2 class="section-title">Our Booking Process</h2>
+        <p class="section-subtitle">Once you've sent a quote request and we've confirmed availability, here's what happens next.</p>
+
+        <div class="process-steps">
+            <div class="process-step">
+                <div class="process-step-num">Step 1</div>
+                <h3>🧗 Inquire &amp; Confirm</h3>
+                <p>Submit your quote request and we'll follow up to confirm your trip dates, group size, and which program fits your goals and experience level.</p>
+                <span class="process-step-badge">
+                    <img src="https://cdn.simpleicons.org/googleforms/673AB7" alt="Google Forms">
+                    <span style="color:#673AB7;">Google Forms</span>
+                </span>
+            </div>
+            <div class="process-step">
+                <div class="process-step-num">Step 2</div>
+                <h3>📄 Sign the Waiver</h3>
+                <p>We'll send a Participant Release of Liability &amp; Medical Consent form via PandaDoc. Takes just a few minutes to sign digitally — required before any guided trip.</p>
+                <span class="process-step-badge">
+                    <img src="https://www.google.com/s2/favicons?domain=pandadoc.com&sz=64" alt="PandaDoc">
+                    <span style="color:#33D27E;">PandaDoc</span>
+                </span>
+            </div>
+            <div class="process-step">
+                <div class="process-step-num">Step 3</div>
+                <h3>💳 Invoice &amp; Payment</h3>
+                <p>You'll receive a Stripe invoice with payment due before your trip. We also accept check or cash. Payment confirms your spot.</p>
+                <span class="process-step-badge">
+                    <img src="https://cdn.simpleicons.org/stripe/635BFF" alt="Stripe">
+                    <span style="color:#635BFF;">Stripe · Check · Cash</span>
+                </span>
+            </div>
+            <div class="process-step">
+                <div class="process-step-num">Step 4</div>
+                <h3>🪨 Meet at the Crag</h3>
+                <p>We'll confirm your meetup point — usually Miguel's Pizza in Slade, KY — and share any last-minute beta on conditions, gear, and the approach.</p>
+                <span class="process-step-badge">
+                    <span>📍 Miguel's Pizza, Slade KY</span>
+                </span>
+            </div>
+        </div>
+        <div class="process-disclaimers">
+            <p>🛡️ All guided trips are covered under our professional guiding liability insurance. Crag College Guides LLC is <strong>fully insured</strong> for operations on Ash Branch, RRGCC land, and Muir Valley.</p>
+        </div>
+    </section>
+
+    <!-- Location -->
+    <section id="location">
+        <h2 class="section-title">Location</h2>
+        <p class="section-subtitle">Based at the Red River Gorge — one of the best single-pitch climbing destinations in the eastern United States.</p>
+
+        <div class="location-content">
+            <div class="location-text">
+                <h3>Operating Areas in the Red River Gorge, KY</h3>
+                <p>We hold permits to guide at three premier land management areas in the RRG:</p>
+                <ul class="location-features">
+                    <li>Ash Branch — classic single-pitch trad and sport</li>
+                    <li>RRGCC Land — Red River Gorge Climbers' Coalition managed crags</li>
+                    <li>Muir Valley — private preserve with world-class routes</li>
+                    <li>Miguel's Pizza — basecamp for camping and logistics</li>
+                    <li>Natural Bridge State Park area</li>
+                </ul>
+                <p style="margin-top: 1.2rem;"><strong>📍 Meetup Default:</strong> <a href="https://maps.google.com/?q=Miguel%27s+Pizza+Slade+KY" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: underline;">Miguel's Pizza, Slade, KY</a> — campground on-site, breakfast and dinner available. Ask about overnight trip packages!</p>
+            </div>
+            <div class="location-map">
+                <iframe src="https://maps.google.com/maps?q=37.7903,-83.7025&z=11&t=k&output=embed" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBfbiTv37Tqd0AqFt4WPsSrSq5dbpa7IY&libraries=places&loading=async" async defer></script>
+    <script src="js/quote-widget.js"></script>
+    <script>
+        const IQ_CONFIGS = {
+            'intro': {
+                camper:   { name: 'Intro to Outdoor Climbing', weeknightRate: 150, weekendRate: 175, towInsurancePerDay: 0 },
+                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                addons: [
+                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
+                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                ],
+                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
+            },
+            'sport-lead': {
+                camper:   { name: 'Sport Lead Climbing Clinic', weeknightRate: 175, weekendRate: 200, towInsurancePerDay: 0 },
+                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                addons: [
+                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
+                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                ],
+                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
+            },
+            'trad-anchor': {
+                camper:   { name: 'Trad & Anchor Building', weeknightRate: 200, weekendRate: 225, towInsurancePerDay: 0 },
+                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                addons: [
+                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
+                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                ],
+                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
+            },
+        };
+
+        let iqWidget = null;
+
+        function selectCamper(card, scroll) {
+            const key = card.dataset.camper;
+            document.querySelectorAll('.iq-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
+            const wrap = document.getElementById('iq-widget-wrap');
+            const widgetEl = document.getElementById('iq-widget');
+            widgetEl.innerHTML = '';
+            wrap.hidden = false;
+            if (scroll) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            iqWidget = new QuoteWidget({ container: '#iq-widget', ...IQ_CONFIGS[key] });
+        }
+
+        document.querySelectorAll('.iq-card').forEach(card => {
+            card.addEventListener('click', () => selectCamper(card, true));
+        });
+
+        selectCamper(document.querySelector('.iq-card[data-camper="intro"]'), false);
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="contact-info">
+            <a href="mailto:cragcollege@gmail.com">cragcollege@gmail.com</a>
+            <a href="tel:+12602059145">(260) 205-9145</a>
+        </div>
+        <p>© 2026 Crag College Guides LLC | Red River Gorge, Kentucky</p>
+    </footer>
+</body>
+</html>
