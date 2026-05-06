@@ -11,7 +11,7 @@
     const root = isIndex ? '' : 'index.html';
 
     nav.innerHTML = `
-        <a href="${root || '#'}" class="logo">Crag College</a>
+        <a href="${root || '#'}" class="logo">Crag College<span class="logo-sub">Guided Rock Climbing</span></a>
         <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false">
             <span></span><span></span><span></span>
         </button>

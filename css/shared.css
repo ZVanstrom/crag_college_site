@@ -30,7 +30,8 @@ nav {
     box-shadow: 0 4px 20px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
     z-index: 100;
 }
-.logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--primary); text-decoration: none; letter-spacing: -0.01em; }
+.logo { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--primary); text-decoration: none; letter-spacing: -0.01em; display: flex; flex-direction: column; line-height: 1.2; }
+.logo-sub { font-family: 'Inter', sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray); }
 .nav-hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
 .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--dark); border-radius: 2px; transition: transform 0.2s, opacity 0.2s; }
 nav.nav-open .nav-hamburger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -316,6 +317,12 @@ section { padding: 4rem 2rem; }
 .qw-toggle-btn:hover { border-color: var(--accent); color: var(--dark); }
 .qw-toggle-btn.active { background: var(--accent); border-color: #b45309; color: white; }
 .qw-map { margin-top: 0.75rem; height: 180px; border-radius: 8px; overflow: hidden; border: 1.5px solid #e2e8f0; }
+.qw-climber-row { display: flex; align-items: center; gap: 1rem; }
+.qw-climber-btn { width: 2.4rem; height: 2.4rem; font-size: 1.3rem; font-weight: 700; background: white; border: 1.5px solid #e2e8f0; border-radius: 8px; cursor: pointer; color: var(--dark); transition: all 0.2s; line-height: 1; display: flex; align-items: center; justify-content: center; }
+.qw-climber-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.qw-climber-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.qw-climber-count { font-size: 1.5rem; font-weight: 700; color: var(--dark); min-width: 2rem; text-align: center; }
+.qw-group-warn { color: #b45309; font-weight: 600; }
 .qw-addons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 .qw-addon-btn { font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 600; padding: 0.65rem 1rem; background: white; border: 1.5px solid #e2e8f0; border-radius: 8px; cursor: pointer; color: var(--gray); transition: all 0.2s; }
 .qw-addon-btn:hover { border-color: var(--accent); color: var(--dark); }

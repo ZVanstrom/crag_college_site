@@ -1,26 +1,18 @@
-/* QuoteWidget — reusable per-camper quote builder
+/* QuoteWidget — climbing guide trip booking
  *
  * Usage:
  *   new QuoteWidget({
  *     container: '#quote-widget',
- *     camper:   { name: 'Sport Lead Climbing Clinic', weeknightRate: 175, weekendRate: 200, towInsurancePerDay: 0 },
- *     delivery: { ratePerMile: 5, minimum: 100, origin: 'Stanton, KY 40380' },
+ *     camper:   { name: 'Intro to Outdoor Climbing',
+ *                 halfDayRate: 150, fullDayRate: 220,
+ *                 secondGuideHalfDay: 200, secondGuideFullDay: 300 },
  *     addons:   [
- *       { id: 'starlink',  label: 'Starlink',        price: 60, per: 'rental' },
- *       { id: 'generator', label: 'Generator',        price: 10, per: 'night'  },
- *       { id: 'espresso',  label: 'Espresso machine', price: 10, per: 'night'  },
+ *       { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
+ *       { id: 'gear-rental',  label: 'Gear rental (harness + belay device)', price: 15, per: 'person' },
+ *       { id: 'shoes',        label: 'Climbing shoes', price: 10, per: 'person' },
  *     ],
  *     emailjs:  { publicKey: '...', serviceId: '...', templateId: '...' }
  *   });
- *
- * Required EmailJS template variables:
- *   {{camper}} {{customer_email}} {{customer_name}} {{customer_phone}}
- *   {{check_in}} {{check_out}} {{total_nights}}
- *   {{nights_subtotal}} {{delivery_mode}} {{delivery_subtotal}}
- *   {{tow_insurance_subtotal}} {{addons_label}} {{addons_subtotal}}
- *   {{subtotal}} {{tax}} {{total}}
- *
- * Required globals on the page: flatpickr, emailjs, google.maps (Places + DistanceMatrix)
  */
 const DISCOUNT_CODES = {
     'fivepercentoff':       { rate: 0.05, label: '5% discount (code)' },
@@ -34,7 +26,14 @@ const DISCOUNT_CODES = {
 class QuoteWidget {
     constructor(config) {
         this.config = config;
-        this.state = { checkIn: null, checkOut: null, mode: 'delivery', address: null, miles: null, addons: {}, contactPref: { phone: false, text: false, email: false }, codeDiscount: null };
+        this.state = {
+            tripDate:    null,
+            tripType:    'half',  // 'half' | 'full'
+            climbers:    1,
+            addons:      {},
+            contactPref: { phone: false, text: false, email: false },
+            codeDiscount: null,
+        };
         if (this.config.addons) {
             this.config.addons.forEach(a => { this.state.addons[a.id] = false; });
         }
@@ -45,7 +44,6 @@ class QuoteWidget {
         this.bindEvents();
         this.initFlatpickr();
         this.initEmailJS();
-        this.initGoogleMapsWhenReady();
         this.update();
     }
 
@@ -54,9 +52,17 @@ class QuoteWidget {
                     <div class="qw-field">
                         <label class="qw-label">Add-ons <span style="font-weight:400;color:#94a3b8;font-size:0.85em;">(optional)</span></label>
                         <div class="qw-addons">
-                            ${this.config.addons.map(a =>
-                                `<button type="button" class="qw-addon-btn" data-addon="${a.id}">${a.label} <small style="opacity:0.7">+$${a.price}${a.per === 'night' ? '/night' : '/trip'}</small></button>`
-                            ).join('')}
+                            ${this.config.addons.map(a => {
+                                let priceLabel;
+                                if (a.halfDayPrice !== undefined) {
+                                    priceLabel = `+$${a.halfDayPrice} half / $${a.fullDayPrice} full day`;
+                                } else if (a.per === 'person') {
+                                    priceLabel = `+$${a.price}/person`;
+                                } else {
+                                    priceLabel = `+$${a.price}/trip`;
+                                }
+                                return `<button type="button" class="qw-addon-btn" data-addon="${a.id}">${a.label} <small style="opacity:0.7">${priceLabel}</small></button>`;
+                            }).join('')}
                         </div>
                     </div>` : '';
 
@@ -68,28 +74,30 @@ class QuoteWidget {
                 </div>
                 <div class="qw-form">
                     <div class="qw-field">
-                        <label class="qw-label">Trip Dates</label>
-                        <input type="text" class="qw-input qw-dates" placeholder="Select check-in → check-out" readonly>
-                        <div class="qw-helper qw-night-count"></div>
+                        <label class="qw-label">Trip Date</label>
+                        <input type="text" class="qw-input qw-dates" placeholder="Select a date" readonly>
                     </div>
                     <div class="qw-field">
-                        <label class="qw-label">Pickup or Delivery</label>
+                        <label class="qw-label">Duration</label>
                         <div class="qw-toggle">
-                            <button type="button" class="qw-toggle-btn active" data-mode="delivery">🚗 Delivery</button>
-                            <button type="button" class="qw-toggle-btn" data-mode="pickup">📍 Self-Drive to Crag</button>
+                            <button type="button" class="qw-toggle-btn active" data-type="half">Half Day <small style="opacity:0.7">(5 hrs)</small></button>
+                            <button type="button" class="qw-toggle-btn" data-type="full">Full Day <small style="opacity:0.7">(8–9 hrs)</small></button>
                         </div>
                     </div>
-                    <div class="qw-field qw-address-field">
-                        <label class="qw-label">Delivery Address</label>
-                        <input type="text" class="qw-input qw-address" placeholder="Start typing an address...">
-                        <div class="qw-helper qw-distance"></div>
+                    <div class="qw-field">
+                        <label class="qw-label">Number of Climbers</label>
+                        <div class="qw-climber-row">
+                            <button type="button" class="qw-climber-btn qw-climber-dec" aria-label="Decrease">−</button>
+                            <span class="qw-climber-count">1</span>
+                            <button type="button" class="qw-climber-btn qw-climber-inc" aria-label="Increase">+</button>
+                        </div>
+                        <div class="qw-helper qw-group-note">1 guide included for groups of 1–6</div>
                     </div>
-                    <div class="qw-map" hidden></div>
                     ${addonsHtml}
                 </div>
                 <div class="qw-quote">
                     <div class="qw-line-items"></div>
-                    <p class="qw-prompt">Select your dates to see a quote.</p>
+                    <p class="qw-prompt">Select a date to see a quote.</p>
                 </div>
                 <div class="qw-code-bar" hidden>
                     <div class="qw-code-row">
@@ -100,7 +108,7 @@ class QuoteWidget {
                 </div>
                 <div class="qw-customer" hidden>
                     <h3>Save your quote and get in touch!</h3>
-                    <p class="qw-customer-sub">Drop your email and we'll send the full breakdown — and follow up to lock in your dates.</p>
+                    <p class="qw-customer-sub">Drop your email and we'll send the full breakdown — and follow up to lock in your date.</p>
                     <div class="qw-customer-fields">
                         <input type="email" class="qw-input qw-email" placeholder="Email (required)" required>
                         <input type="text"  class="qw-input qw-name"  placeholder="Name (optional)">
@@ -126,18 +134,19 @@ class QuoteWidget {
             btn.addEventListener('click', () => {
                 this.container.querySelectorAll('.qw-toggle-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                this.state.mode = btn.dataset.mode;
-                this.$('.qw-address-field').hidden = this.state.mode !== 'delivery';
-                if (this.state.mode === 'pickup') {
-                    this.state.miles = null; this.state.address = null; this.$('.qw-distance').textContent = '';
-                    this.showPickupMap();
-                } else {
-                    this.$('.qw-map').hidden = true;
-                }
+                this.state.tripType = btn.dataset.type;
                 this.update();
             });
         });
-        this.container.querySelectorAll('.qw-addon-btn').forEach(btn => {
+
+        this.$('.qw-climber-dec').addEventListener('click', () => {
+            if (this.state.climbers > 1) { this.state.climbers--; this.syncClimberDisplay(); this.update(); }
+        });
+        this.$('.qw-climber-inc').addEventListener('click', () => {
+            if (this.state.climbers < 13) { this.state.climbers++; this.syncClimberDisplay(); this.update(); }
+        });
+
+        this.container.querySelectorAll('.qw-addon-btn:not(.qw-pref-btn)').forEach(btn => {
             btn.addEventListener('click', () => {
                 const id = btn.dataset.addon;
                 this.state.addons[id] = !this.state.addons[id];
@@ -145,6 +154,7 @@ class QuoteWidget {
                 this.update();
             });
         });
+
         const applyCode = () => {
             const input = this.$('.qw-code-input');
             const status = this.$('.qw-code-status');
@@ -172,19 +182,25 @@ class QuoteWidget {
                 btn.classList.toggle('active', this.state.contactPref[pref]);
             });
         });
+
         this.$('.qw-send-btn').addEventListener('click', () => this.sendEmail());
+    }
+
+    syncClimberDisplay() {
+        const c = this.state.climbers;
+        this.$('.qw-climber-count').textContent = c > 12 ? '12+' : c;
+        this.$('.qw-climber-dec').disabled = c <= 1;
+        this.$('.qw-climber-inc').disabled = c >= 13;
     }
 
     initFlatpickr() {
         if (typeof flatpickr === 'undefined') { console.error('QuoteWidget: flatpickr not loaded'); return; }
         flatpickr(this.$('.qw-dates'), {
-            mode: 'range',
+            mode: 'single',
             minDate: 'today',
             dateFormat: 'M j, Y',
-            showMonths: window.innerWidth > 768 ? 2 : 1,
             onChange: (dates) => {
-                if (dates.length === 2) { this.state.checkIn = dates[0]; this.state.checkOut = dates[1]; }
-                else { this.state.checkIn = null; this.state.checkOut = null; }
+                this.state.tripDate = dates[0] || null;
                 this.update();
             }
         });
@@ -196,211 +212,138 @@ class QuoteWidget {
         }
     }
 
-    initGoogleMapsWhenReady() {
-        const tryInit = () => {
-            if (window.google?.maps?.places) this.initGoogleMaps();
-            else setTimeout(tryInit, 200);
-        };
-        tryInit();
+    computeBasePrice() {
+        const isHalf = this.state.tripType === 'half';
+        const base       = isHalf ? this.config.camper.halfDayBase       : this.config.camper.fullDayBase;
+        const additional = isHalf ? this.config.camper.halfDayAdditional : this.config.camper.fullDayAdditional;
+        const extraCount = Math.max(0, this.state.climbers - 1);
+        const extraCost  = extraCount * additional;
+        return { base, additional, extraCount, extraCost, total: base + extraCost };
     }
 
-    initGoogleMaps() {
-        const input = this.$('.qw-address');
-        this.autocomplete = new google.maps.places.Autocomplete(input, {
-            componentRestrictions: { country: 'us' },
-            fields: ['formatted_address', 'name', 'geometry']
-        });
-        this.distanceService = new google.maps.DistanceMatrixService();
-        this.autocomplete.addListener('place_changed', () => {
-            const place = this.autocomplete.getPlace();
-            if (!place || !place.formatted_address) return;
-            this.state.address = place.name && place.name !== place.formatted_address
-                ? `${place.name}, ${place.formatted_address}`
-                : place.formatted_address;
-            this.lookupDistance(place.formatted_address);
-        });
+    getSecondGuideRate() {
+        return this.state.tripType === 'half'
+            ? this.config.camper.secondGuideHalfDay
+            : this.config.camper.secondGuideFullDay;
     }
 
-    lookupDistance(address) {
-        const helper = this.$('.qw-distance');
-        helper.textContent = 'Calculating distance…';
-        this.distanceService.getDistanceMatrix({
-            origins: [this.config.delivery.origin],
-            destinations: [address],
-            travelMode: 'DRIVING',
-            unitSystem: google.maps.UnitSystem.IMPERIAL,
-        }, (response, status) => {
-            if (status !== 'OK') { helper.textContent = 'Could not calculate distance for that address.'; return; }
-            const el = response.rows[0].elements[0];
-            if (el.status !== 'OK') { helper.textContent = 'No driving route found to that address.'; return; }
-            this.state.miles = el.distance.value / 1609.344;
-            const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(this.config.delivery.origin)}&destination=${encodeURIComponent(address)}`;
-            helper.innerHTML = `${this.state.miles.toFixed(0)} mi from ${this.config.delivery.origin.split(',')[0]} (${el.duration.text} drive) · <a href="${mapsUrl}" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:none;font-weight:600;">View route ↗</a>`;
-            this.showRouteMap(this.config.delivery.origin, address);
-            this.update();
-        });
-    }
-
-    showPickupMap() {
-        if (!window.google?.maps) return;
-        const mapEl = this.$('.qw-map');
-        mapEl.hidden = false;
-        if (this._pickupLatLng) {
-            this._renderPickupMap(mapEl, this._pickupLatLng);
-            return;
-        }
-        new google.maps.Geocoder().geocode({ address: 'Red River Paylake, Slade, KY 40376' }, (results, status) => {
-            if (status !== 'OK' || !results[0]) return;
-            this._pickupLatLng = results[0].geometry.location;
-            this._renderPickupMap(mapEl, this._pickupLatLng);
-        });
-    }
-
-    _renderPickupMap(mapEl, location) {
-        const map = new google.maps.Map(mapEl, {
-            center: location,
-            zoom: 9,
-            disableDefaultUI: true,
-            zoomControl: true,
-            gestureHandling: 'cooperative',
-        });
-        new google.maps.Marker({ map, position: location });
-    }
-
-    showRouteMap(origin, destination) {
-        const mapEl = this.$('.qw-map');
-        mapEl.hidden = false;
-        const map = new google.maps.Map(mapEl, {
-            disableDefaultUI: true,
-            zoomControl: true,
-            gestureHandling: 'cooperative',
-        });
-        new google.maps.DirectionsService().route({
-            origin,
-            destination,
-            travelMode: google.maps.TravelMode.DRIVING,
-        }, (result, status) => {
-            if (status === 'OK') {
-                new google.maps.DirectionsRenderer({ map, suppressMarkers: false }).setDirections(result);
-            }
-        });
-    }
-
-    calculateNights() {
-        if (!this.state.checkIn || !this.state.checkOut) return null;
-        let week = 0, weekend = 0;
-        const cur = new Date(this.state.checkIn); cur.setHours(0, 0, 0, 0);
-        const end = new Date(this.state.checkOut); end.setHours(0, 0, 0, 0);
-        while (cur < end) {
-            const d = cur.getDay(); // 0=Sun, 5=Fri, 6=Sat
-            if (d === 0 || d === 5 || d === 6) weekend++; else week++;
-            cur.setDate(cur.getDate() + 1);
-        }
-        return { week, weekend, total: week + weekend };
-    }
-
-    computeAddonLines(nights) {
+    computeAddonLines() {
         const lines = [];
-        if (!this.config.addons || !nights) return lines;
+        if (!this.config.addons) return lines;
         for (const a of this.config.addons) {
-            if (this.state.addons[a.id]) {
-                const cost = a.per === 'night' ? a.price * nights.total : a.price;
-                lines.push({ ...a, cost });
+            if (!this.state.addons[a.id]) continue;
+            let cost, detail;
+            if (a.halfDayPrice !== undefined) {
+                cost = this.state.tripType === 'half' ? a.halfDayPrice : a.fullDayPrice;
+                detail = null;
+            } else if (a.per === 'person') {
+                cost = a.price * this.state.climbers;
+                detail = `${this.state.climbers} × $${a.price}`;
+            } else {
+                cost = a.price;
+                detail = null;
             }
+            lines.push({ ...a, cost, detail });
         }
         return lines;
     }
 
     computeTotals() {
-        const nights = this.calculateNights();
-        if (!nights) return null;
-        const { weeknightRate, weekendRate, towInsurancePerDay = 0 } = this.config.camper;
-        const minimumApplied = nights.total < 3;
-        const minimumNightsAdded = minimumApplied ? 3 - nights.total : 0;
-        const actualNightsCost = nights.week * weeknightRate + nights.weekend * weekendRate;
-        const nightsSubtotalFull = actualNightsCost + minimumNightsAdded * weekendRate;
-        let discountRate = 0, discountLabel = null;
+        if (!this.state.tripDate) return null;
+        const { climbers, tripType } = this.state;
+        if (climbers > 12) return { largeGroup: true };
+
+        const pricing = this.computeBasePrice();
+        const needsSecondGuide = climbers > 6;
+        const secondGuideFee = needsSecondGuide ? this.getSecondGuideRate() : 0;
+        const addonLines = this.computeAddonLines();
+        const addonsSubtotal = addonLines.reduce((sum, a) => sum + a.cost, 0);
+        const preDiscountSubtotal = pricing.total + secondGuideFee + addonsSubtotal;
+
+        let discountRate = 0, discountLabel = null, discountAmount = 0;
         if (this.state.codeDiscount) {
             discountRate = this.state.codeDiscount.rate;
             discountLabel = this.state.codeDiscount.label;
-        } else if (nights.total >= 14) { discountRate = 0.15; discountLabel = '15% extended stay discount'; }
-        else if (nights.total >= 7)    { discountRate = 0.10; discountLabel = '10% weekly discount'; }
-        let deliverySubtotal = 0, deliveryDetail = null;
-        let towInsuranceSubtotal = 0;
-        if (this.state.mode === 'delivery') {
-            if (this.state.miles == null) return { nights, nightsSubtotalFull, minimumApplied, minimumNightsAdded, discountRate, discountLabel, awaitingDelivery: true };
-            const raw = this.state.miles * this.config.delivery.ratePerMile;
-            const min = this.config.delivery.minimum;
-            deliverySubtotal = Math.round(Math.max(raw, min));
-            deliveryDetail = { miles: this.state.miles, raw, appliedMinimum: raw < min };
-        } else {
-            towInsuranceSubtotal = towInsurancePerDay * nights.total;
+            discountAmount = Math.round(preDiscountSubtotal * discountRate);
         }
-        const addonLines = this.computeAddonLines(nights);
-        const addonsSubtotal = addonLines.reduce((sum, a) => sum + a.cost, 0);
-        const preDiscountSubtotal = nightsSubtotalFull + deliverySubtotal + towInsuranceSubtotal + addonsSubtotal;
-        const discountAmount = Math.round(preDiscountSubtotal * discountRate);
+
         const subtotal = Math.round(preDiscountSubtotal - discountAmount);
         const tax = Math.round(subtotal * 0.06);
         const total = Math.round(subtotal + tax);
-        return { nights, nightsSubtotalFull, minimumApplied, minimumNightsAdded, discountRate, discountLabel, discountAmount, deliverySubtotal, deliveryDetail, towInsuranceSubtotal, addonLines, addonsSubtotal, preDiscountSubtotal, subtotal, tax, total };
+
+        return {
+            climbers, tripType, pricing,
+            needsSecondGuide, secondGuideFee,
+            addonLines, addonsSubtotal,
+            preDiscountSubtotal, discountRate, discountLabel, discountAmount,
+            subtotal, tax, total,
+        };
     }
 
     update() {
-        const lineItems = this.$('.qw-line-items');
-        const prompt = this.$('.qw-prompt');
-        const customer = this.$('.qw-customer');
-        const codeBar = this.$('.qw-code-bar');
-        const nightCount = this.$('.qw-night-count');
+        const lineItems  = this.$('.qw-line-items');
+        const prompt     = this.$('.qw-prompt');
+        const customer   = this.$('.qw-customer');
+        const codeBar    = this.$('.qw-code-bar');
+        const groupNote  = this.$('.qw-group-note');
 
-        const nights = this.calculateNights();
-        if (nights) {
-            const parts = [];
-            if (nights.week > 0)    parts.push(`${nights.week} weeknight${nights.week !== 1 ? 's' : ''}`);
-            if (nights.weekend > 0) parts.push(`${nights.weekend} weekend night${nights.weekend !== 1 ? 's' : ''}`);
-            const base = `${nights.total} night${nights.total !== 1 ? 's' : ''} (${parts.join(', ')})`;
-            nightCount.textContent = nights.total < 3 ? `${base} · 3-night minimum applies` : base;
+        const c = this.state.climbers;
+        if (c <= 6) {
+            groupNote.textContent = '1 guide included for groups of 1–6';
+            groupNote.className = 'qw-helper qw-group-note';
+        } else if (c <= 12) {
+            groupNote.textContent = '7–12 climbers: second guide fee applies';
+            groupNote.className = 'qw-helper qw-group-note qw-group-warn';
         } else {
-            nightCount.textContent = '';
+            groupNote.innerHTML = 'Groups larger than 12 — <a href="mailto:cragcollege@gmail.com" style="color:var(--accent);font-weight:600;">contact us</a> for a custom quote';
+            groupNote.className = 'qw-helper qw-group-note qw-group-warn';
+        }
+
+        if (!this.state.tripDate) {
+            lineItems.innerHTML = ''; prompt.textContent = 'Select a date to see a quote.'; prompt.style.display = ''; customer.hidden = true; codeBar.hidden = true; return;
         }
 
         const totals = this.computeTotals();
-        if (!totals) {
-            lineItems.innerHTML = ''; prompt.textContent = 'Select your dates to see a quote.'; prompt.style.display = ''; customer.hidden = true; codeBar.hidden = true; return;
+
+        if (totals?.largeGroup) {
+            lineItems.innerHTML = '';
+            prompt.innerHTML = 'Groups larger than 12 require a custom quote. <a href="mailto:cragcollege@gmail.com" style="color:var(--accent);font-weight:600;">Email us</a> and we\'ll work something out!';
+            prompt.style.display = '';
+            customer.hidden = true; codeBar.hidden = true; return;
         }
-        if (totals.awaitingDelivery) {
-            lineItems.innerHTML = ''; prompt.textContent = 'Enter a delivery address to complete your quote.'; prompt.style.display = ''; customer.hidden = true; codeBar.hidden = true; return;
+
+        if (!totals) {
+            lineItems.innerHTML = ''; prompt.textContent = 'Select a date to see a quote.'; prompt.style.display = ''; customer.hidden = true; codeBar.hidden = true; return;
         }
 
         prompt.style.display = 'none';
-        const { weeknightRate, weekendRate } = this.config.camper;
+        const tripLabel = totals.tripType === 'half' ? 'Half Day (5 hrs)' : 'Full Day (8–9 hrs)';
+        const { pricing } = totals;
         const lines = [];
-        if (totals.nights.week > 0)    lines.push(`<div class="qw-line"><span>${totals.nights.week} weeknight${totals.nights.week !== 1 ? 's' : ''} × $${weeknightRate}</span><span>$${(totals.nights.week * weeknightRate).toLocaleString()}</span></div>`);
-        if (totals.nights.weekend > 0) lines.push(`<div class="qw-line"><span>${totals.nights.weekend} weekend night${totals.nights.weekend !== 1 ? 's' : ''} × $${weekendRate}</span><span>$${(totals.nights.weekend * weekendRate).toLocaleString()}</span></div>`);
-        if (totals.minimumApplied) {
-            lines.push(`<div class="qw-line"><span>+${totals.minimumNightsAdded} weekend night${totals.minimumNightsAdded !== 1 ? 's' : ''} <small>(3-night minimum × $${weekendRate})</small></span><span>$${(totals.minimumNightsAdded * weekendRate).toLocaleString()}</span></div>`);
+
+        lines.push(`<div class="qw-line"><span>${tripLabel} — 1st climber</span><span>$${pricing.base.toLocaleString()}</span></div>`);
+        if (pricing.extraCount > 0) {
+            lines.push(`<div class="qw-line"><span>+ ${pricing.extraCount} additional climber${pricing.extraCount !== 1 ? 's' : ''} × $${pricing.additional}</span><span>$${pricing.extraCost.toLocaleString()}</span></div>`);
         }
-        if (totals.discountAmount > 0) lines.push(`<div class="qw-line qw-discount"><span>${totals.discountLabel}</span><span>-$${totals.discountAmount.toLocaleString()}</span></div>`);
-        if (this.state.mode === 'delivery') {
-            const dd = totals.deliveryDetail;
-            const detail = dd.appliedMinimum
-                ? `${dd.miles.toFixed(0)} mi × $${this.config.delivery.ratePerMile}/mi · $${this.config.delivery.minimum} min`
-                : `${dd.miles.toFixed(0)} mi × $${this.config.delivery.ratePerMile}/mi`;
-            lines.push(`<div class="qw-line"><span>Delivery <small>(${detail})</small></span><span>$${Math.round(totals.deliverySubtotal).toLocaleString()}</span></div>`);
-        } else {
-            lines.push(`<div class="qw-line"><span>Self-Drive to Crag</span><span class="qw-free">Free</span></div>`);
-            const towRate = this.config.camper.towInsurancePerDay || 0;
-            if (towRate > 0) {
-                lines.push(`<div class="qw-line"><span>Towing insurance <small>(${totals.nights.total} day${totals.nights.total !== 1 ? 's' : ''} × $${towRate})</small></span><span>$${totals.towInsuranceSubtotal.toLocaleString()}</span></div>`);
-            }
+        lines.push(`<div class="qw-line qw-gear-note"><span>All gear included <small>(harness, helmet, rope, draws)</small></span><span class="qw-free">✓</span></div>`);
+
+        if (totals.needsSecondGuide) {
+            lines.push(`<div class="qw-line"><span>Second guide fee <small>(7–12 climbers)</small></span><span>$${totals.secondGuideFee.toLocaleString()}</span></div>`);
         }
+
         for (const a of totals.addonLines) {
-            const detail = a.per === 'night' ? ` <small>(${totals.nights.total} night${totals.nights.total !== 1 ? 's' : ''} × $${a.price})</small>` : '';
+            const detail = a.detail ? ` <small>(${a.detail})</small>` : '';
             lines.push(`<div class="qw-line"><span>${a.label}${detail}</span><span>$${a.cost.toLocaleString()}</span></div>`);
         }
+
+        if (totals.discountAmount > 0) {
+            lines.push(`<div class="qw-line qw-discount"><span>${totals.discountLabel}</span><span>-$${totals.discountAmount.toLocaleString()}</span></div>`);
+        }
+
         lines.push(`<div class="qw-line qw-subtotal"><span>Subtotal</span><span>$${totals.subtotal.toLocaleString()}</span></div>`);
         lines.push(`<div class="qw-line"><span>Tax <small>(6%)</small></span><span>$${totals.tax.toLocaleString()}</span></div>`);
         lines.push(`<div class="qw-line qw-total"><span>Total</span><span>$${totals.total.toLocaleString()}</span></div>`);
+
         lineItems.innerHTML = lines.join('');
         codeBar.hidden = false;
         customer.hidden = false;
@@ -408,47 +351,48 @@ class QuoteWidget {
 
     async sendEmail() {
         const status = this.$('.qw-status');
-        const email = this.$('.qw-email').value.trim();
+        const email  = this.$('.qw-email').value.trim();
         if (!email) { status.textContent = 'Email is required.'; status.className = 'qw-status qw-error'; return; }
         const totals = this.computeTotals();
-        if (!totals || totals.awaitingDelivery) return;
+        if (!totals || totals.largeGroup) return;
 
         const fmt = d => d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        const tripLabel = this.state.tripType === 'half' ? 'Half Day (5 hrs)' : 'Full Day (8–9 hrs)';
         const addonLines = totals.addonLines;
         const addonsLabel = addonLines.length
             ? 'Add-ons: ' + addonLines.map(a => {
-                const detail = a.per === 'night' ? ` (${totals.nights.total} nights x $${a.price})` : '';
+                const detail = a.detail ? ` (${a.detail})` : '';
                 return `${a.label}${detail}`;
               }).join(', ')
             : 'Add-ons';
         const addonsSubtotal = addonLines.length ? `$${totals.addonsSubtotal.toLocaleString()}` : 'None';
 
         const params = {
-            subject: `Quote Request - ${this.config.camper.name} - ${fmt(this.state.checkIn)} to ${fmt(this.state.checkOut)}`,
-            camper: this.config.camper.name,
-            customer_email: email,
-            customer_name:  this.$('.qw-name').value.trim(),
-            customer_phone: this.$('.qw-phone').value.trim(),
+            subject:            `Quote Request - ${this.config.camper.name} - ${fmt(this.state.tripDate)}`,
+            camper:             this.config.camper.name,
+            customer_email:     email,
+            customer_name:      this.$('.qw-name').value.trim(),
+            customer_phone:     this.$('.qw-phone').value.trim(),
             contact_preference: Object.entries(this.state.contactPref).filter(([,v]) => v).map(([k]) => k.charAt(0).toUpperCase() + k.slice(1)).join(', ') || 'Not specified',
-            discount_code: this.state.codeDiscount ? `${this.$('.qw-code-input').value.trim()} (${Math.round(this.state.codeDiscount.rate * 100)}% off)` : 'None',
-            name:  this.$('.qw-name').value.trim(),
-            email: email,
-            check_in:  fmt(this.state.checkIn),
-            check_out: fmt(this.state.checkOut),
-            total_nights:    String(totals.nights.total),
-            nights_subtotal: `$${totals.nightsSubtotalFull.toLocaleString()}`,
-            delivery_mode:   this.state.mode === 'delivery'
-                ? `Delivery to ${this.state.address} (${totals.deliveryDetail.miles.toFixed(0)} mi)`
-                : 'Self-Drive to Crag',
-            delivery_subtotal: this.state.mode === 'delivery' ? `$${Math.round(totals.deliverySubtotal).toLocaleString()}` : 'Free',
-            tow_insurance_subtotal: this.state.mode === 'delivery' ? 'N/A' : `$${totals.towInsuranceSubtotal.toLocaleString()}`,
-            addons_label:    addonsLabel,
-            addons_subtotal: addonsSubtotal,
-            discount_label:  totals.discountAmount > 0 ? totals.discountLabel : 'No discount',
-            discount_amount: totals.discountAmount > 0 ? `-$${totals.discountAmount.toLocaleString()}` : '—',
-            subtotal: `$${totals.subtotal.toLocaleString()}`,
-            tax: `$${totals.tax.toLocaleString()}`,
-            total: `$${Math.round(totals.total).toLocaleString()}`,
+            discount_code:      this.state.codeDiscount ? `${this.$('.qw-code-input').value.trim()} (${Math.round(this.state.codeDiscount.rate * 100)}% off)` : 'None',
+            name:               this.$('.qw-name').value.trim(),
+            email:              email,
+            check_in:           fmt(this.state.tripDate),
+            check_out:          fmt(this.state.tripDate),
+            total_nights:       `${tripLabel} · ${totals.climbers} climber${totals.climbers !== 1 ? 's' : ''}`,
+            nights_subtotal:    totals.pricing.extraCount > 0
+                ? `$${totals.pricing.base} + ${totals.pricing.extraCount} additional × $${totals.pricing.additional} = $${totals.pricing.total}`
+                : `$${totals.pricing.base} (1 climber)`,
+            delivery_mode:      totals.needsSecondGuide ? 'Second guide (7–12 climbers)' : 'Single guide (1–6 climbers)',
+            delivery_subtotal:  totals.needsSecondGuide ? `$${totals.secondGuideFee.toLocaleString()}` : 'Included',
+            tow_insurance_subtotal: 'N/A',
+            addons_label:       addonsLabel,
+            addons_subtotal:    addonsSubtotal,
+            discount_label:     totals.discountAmount > 0 ? totals.discountLabel : 'No discount',
+            discount_amount:    totals.discountAmount > 0 ? `-$${totals.discountAmount.toLocaleString()}` : '—',
+            subtotal:           `$${totals.subtotal.toLocaleString()}`,
+            tax:                `$${totals.tax.toLocaleString()}`,
+            total:              `$${Math.round(totals.total).toLocaleString()}`,
         };
 
         status.textContent = 'Sending…';

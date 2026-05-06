@@ -55,6 +55,19 @@
             font-family: 'Playfair Display', serif;
             font-size: 3.5rem;
             margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.15;
+        }
+        .hero-sub {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-top: 0.35rem;
         }
 
         .hero-content p {
@@ -548,7 +561,7 @@
         <img class="hero-bg" src="photos/11-22-25%20david%20climbing%20day/DSC_0215.jpg" alt="Rock climber on route at the Red River Gorge, Kentucky">
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Crag College Guided Rock Climbing</h1>
+            <h1>Crag College<span class="hero-sub">Guided Rock Climbing</span></h1>
             <p>AMGA-certified single-pitch instruction at the Red River Gorge. Top-rope, sport lead, and trad climbing guided by Zakyre Vanstrom — SPI &amp; Wilderness First Responder certified.</p>
             <a href="#programs" class="hero-btn">Explore Our Programs</a>
         </div>
@@ -808,35 +821,29 @@
     <script>
         const IQ_CONFIGS = {
             'intro': {
-                camper:   { name: 'Intro to Outdoor Climbing', weeknightRate: 150, weekendRate: 175, towInsurancePerDay: 0 },
-                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                camper:   { name: 'Intro to Outdoor Climbing', halfDayBase: 160, halfDayAdditional: 30, fullDayBase: 220, fullDayAdditional: 50, secondGuideHalfDay: 200, secondGuideFullDay: 300 },
                 addons: [
-                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
-                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                    { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
                 ],
                 emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
             },
             'sport-lead': {
-                camper:   { name: 'Sport Lead Climbing Clinic', weeknightRate: 175, weekendRate: 200, towInsurancePerDay: 0 },
-                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                camper:   { name: 'Sport Lead Climbing Clinic', halfDayBase: 160, halfDayAdditional: 30, fullDayBase: 220, fullDayAdditional: 50, secondGuideHalfDay: 200, secondGuideFullDay: 300 },
                 addons: [
-                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
-                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                    { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
                 ],
                 emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
             },
             'trad-anchor': {
-                camper:   { name: 'Trad & Anchor Building', weeknightRate: 200, weekendRate: 225, towInsurancePerDay: 0 },
-                delivery: { ratePerMile: 0, minimum: 0, origin: 'Slade, KY 40376' },
+                camper:   { name: 'Trad & Anchor Building', halfDayBase: 160, halfDayAdditional: 30, fullDayBase: 220, fullDayAdditional: 50, secondGuideHalfDay: 200, secondGuideFullDay: 300 },
                 addons: [
-                    { id: 'gear-rental', label: 'Gear rental (harness + belay device)', price: 15, per: 'night' },
-                    { id: 'shoes',       label: 'Climbing shoes',                       price: 10, per: 'night' },
+                    { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
                 ],
                 emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
             },
         };
 
-        let iqWidget = null;
+        window.iqWidget = null;
 
         function selectCamper(card, scroll) {
             const key = card.dataset.camper;
