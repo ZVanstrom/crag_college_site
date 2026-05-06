@@ -27,7 +27,6 @@
             <li><a href="${root}#faq">FAQ</a></li>
             <li><a href="${root}#process">Booking Process</a></li>
             <li><a href="${root}#location">Location</a></li>
-            <li><a href="${quoteHref}">Book a Trip</a></li>
             <li><a href="${quoteHref}" class="nav-cta">Book Now</a></li>
         </ul>
     `;

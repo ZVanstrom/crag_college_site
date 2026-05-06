@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/shared.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .badge { background: #d97706; }
         .description-section { padding-top: 1.5rem; }
@@ -26,7 +25,7 @@
         <div class="lightbox-counter" id="lightboxCounter"></div>
     </div>
 
-    <nav data-quote="#quote"></nav>
+    <nav data-quote="index.html#instant-quote"></nav>
     <script src="js/nav.js"></script>
 
     <!-- ── PHOTO CAROUSEL ── -->
@@ -34,72 +33,34 @@
         <div style="text-align: center; margin-bottom: 2rem;">
             <h1 style="font-family: 'Playfair Display', serif; font-size: 2.75rem; color: white; margin-bottom: 0.75rem;">Sport Lead Climbing Clinic</h1>
             <p style="color: rgba(255,255,255,0.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.25rem;">Take your climbing to the next level. Mock leading, clipping bolts, falling safely, and dialing in GriGri/ATC technique. All on permitted routes in the Red River Gorge.</p>
-            <a href="#quote" class="price-tag" style="text-decoration: none; color: white; display: inline-block; transition: opacity 0.2s;">Starting at $160/person ↓</a>
+            <a href="index.html#instant-quote" class="price-tag" style="text-decoration: none; color: white; display: inline-block; transition: opacity 0.2s;">Starting at $160/person ↓</a>
         </div>
         <div class="carousel-wrapper">
             <button class="carousel-btn prev" onclick="carouselMove(-1)">&#8592;</button>
             <div class="carousel-track-container">
                 <div class="carousel-track" id="carouselTrack">
-                    <div class="carousel-slide" onclick="openLightbox(0)"><img src="site-photos/IMG_0893.JPG" alt="Climber clipping a bolt on sport route at Red River Gorge Kentucky"></div>
-                    <div class="carousel-slide" onclick="openLightbox(1)"><img src="site-photos/IMG_0895.JPG" alt="Sport lead climber on limestone face at RRGCC land"></div>
-                    <div class="carousel-slide" onclick="openLightbox(2)"><img src="site-photos/IMG_0897.JPG" alt="Guided sport climbing clinic at Red River Gorge with Crag College"></div>
-                    <div class="carousel-slide" onclick="openLightbox(3)"><img src="site-photos/IMG_0899.JPG" alt="Climber practicing mock lead with AMGA guide belaying"></div>
-                    <div class="carousel-slide" onclick="openLightbox(4)"><img src="site-photos/IMG_0901.JPG" alt="Lead climber falling safely on sport route Red River Gorge"></div>
-                    <div class="carousel-slide" onclick="openLightbox(5)"><img src="site-photos/IMG_0905.JPG" alt="Climber learning GriGri technique for lead belaying"></div>
-                    <div class="carousel-slide" onclick="openLightbox(6)"><img src="site-photos/IMG_0907.JPG" alt="Sport climbing at Muir Valley guided by Crag College"></div>
-                    <div class="carousel-slide" onclick="openLightbox(7)"><img src="site-photos/IMG_0909.JPG" alt="Climber topping out sport route at Red River Gorge Kentucky"></div>
-                    <div class="carousel-slide" onclick="openLightbox(8)"><img src="site-photos/IMG_0093.JPG" alt="Guided sport lead clinic at RRGCC land Red River Gorge"></div>
-                    <div class="carousel-slide" onclick="openLightbox(9)"><img src="site-photos/IMG_0094.JPG" alt="Climbers on sport routes at Red River Gorge with guide"></div>
-                    <div class="carousel-slide" onclick="openLightbox(10)"><img src="site-photos/IMG_0095.JPG" alt="Sport lead instruction at Red River Gorge Kentucky"></div>
-                    <div class="carousel-slide" onclick="openLightbox(11)"><img src="site-photos/IMG_0096.JPG" alt="AMGA guide instructing sport lead technique at the Red"></div>
+                    <div class="carousel-slide" onclick="openLightbox(0)"><img src="site-photos/P1010050.JPG" alt="Climber on tall sandstone wall at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(1)"><img src="site-photos/PXL_20251019_145105405.jpg" alt="Sport lead climbers on route with group watching below at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(2)"><img src="site-photos/PXL_20251019_162209925.jpg" alt="Climber on sport route with group at base Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(3)"><img src="site-photos/P1010059.JPG" alt="Climber on sandstone wall with fall foliage at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(4)"><img src="site-photos/PXL_20251018_143457505.jpg" alt="Climbing group under sandstone overhang at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(5)"><img src="site-photos/PXL_20251019_161436057.jpg" alt="Climber in crack corner on sport route at Red River Gorge"></div>
+                    <div class="carousel-slide" onclick="openLightbox(6)"><img src="site-photos/P1010044.JPG" alt="Climber on overhanging sport route Red River Gorge Kentucky"></div>
+                    <div class="carousel-slide" onclick="openLightbox(7)"><img src="site-photos/P1010051.JPG" alt="Climber working through cave section on sport route at the Red"></div>
                 </div>
             </div>
             <button class="carousel-btn next" onclick="carouselMove(1)">&#8594;</button>
             <div class="carousel-thumbs" id="carouselThumbs">
-                <img class="carousel-thumb active" src="site-photos/IMG_0893.JPG" onclick="carouselGoTo(0)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0895.JPG" onclick="carouselGoTo(1)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0897.JPG" onclick="carouselGoTo(2)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0899.JPG" onclick="carouselGoTo(3)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0901.JPG" onclick="carouselGoTo(4)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0905.JPG" onclick="carouselGoTo(5)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0907.JPG" onclick="carouselGoTo(6)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0909.JPG" onclick="carouselGoTo(7)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0093.JPG" onclick="carouselGoTo(8)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0094.JPG" onclick="carouselGoTo(9)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0095.JPG" onclick="carouselGoTo(10)" alt="">
-                <img class="carousel-thumb"        src="site-photos/IMG_0096.JPG" onclick="carouselGoTo(11)" alt="">
+                <img class="carousel-thumb active" src="site-photos/P1010050.JPG" onclick="carouselGoTo(0)" alt="">
+                <img class="carousel-thumb"        src="site-photos/PXL_20251019_145105405.jpg" onclick="carouselGoTo(1)" alt="">
+                <img class="carousel-thumb"        src="site-photos/PXL_20251019_162209925.jpg" onclick="carouselGoTo(2)" alt="">
+                <img class="carousel-thumb"        src="site-photos/P1010059.JPG" onclick="carouselGoTo(3)" alt="">
+                <img class="carousel-thumb"        src="site-photos/PXL_20251018_143457505.jpg" onclick="carouselGoTo(4)" alt="">
+                <img class="carousel-thumb"        src="site-photos/PXL_20251019_161436057.jpg" onclick="carouselGoTo(5)" alt="">
+                <img class="carousel-thumb"        src="site-photos/P1010044.JPG" onclick="carouselGoTo(6)" alt="">
+                <img class="carousel-thumb"        src="site-photos/P1010051.JPG" onclick="carouselGoTo(7)" alt="">
             </div>
-            <div class="carousel-counter" id="carouselCounter">1 / 12</div>
-        </div>
-    </section>
-
-    <!-- ── QUOTE WIDGET ── -->
-    <section id="quote" class="quote-widget-section">
-        <div class="iq-picker">
-            <div class="iq-card" data-camper="intro" data-name="Intro to Outdoor Climbing">
-                <img src="site-photos/DSC_0208.jpg" alt="Beginner climbing on top-rope at Red River Gorge">
-                <div class="iq-card-info">
-                    <div class="iq-card-name">Intro to Climbing</div>
-                    <div class="iq-card-price">From $160/person</div>
-                </div>
-            </div>
-            <div class="iq-card" data-camper="sport-lead" data-name="Sport Lead Climbing Clinic">
-                <img src="site-photos/IMG_0893.JPG" alt="Climber on sport lead route at Red River Gorge">
-                <div class="iq-card-info">
-                    <div class="iq-card-name">Sport Lead Clinic</div>
-                    <div class="iq-card-price">From $160/person</div>
-                </div>
-            </div>
-            <div class="iq-card" data-camper="trad-anchor" data-name="Trad &amp; Anchor Building">
-                <img src="site-photos/DSC_2409.jpg" alt="Trad gear placement at Red River Gorge">
-                <div class="iq-card-info">
-                    <div class="iq-card-name">Trad &amp; Anchors</div>
-                    <div class="iq-card-price">From $160/person</div>
-                </div>
-            </div>
-        </div>
-        <div id="iq-widget-wrap" style="max-width:780px;margin:0 auto;">
-            <div id="iq-widget"></div>
+            <div class="carousel-counter" id="carouselCounter">1 / 8</div>
         </div>
     </section>
 
@@ -156,8 +117,8 @@
                     <div class="feature-card">
                         <h3>⏱️ Duration &amp; Group Size</h3>
                         <ul>
-                            <li>Full day: 7–8 hours</li>
-                            <li>Max 4 participants per guide</li>
+                            <li>Full day: 8–9 hours</li>
+                            <li>Max 6 participants per guide</li>
                             <li>Private and semi-private sessions available</li>
                         </ul>
                     </div>
@@ -173,11 +134,9 @@
                     <h3 style="font-family:'Inter',sans-serif; font-size:1.05rem; font-weight:700; color:var(--dark); padding:1.1rem 1.5rem 0.75rem; margin:0;">📋 Trip Details</h3>
                     <div class="specs-grid" style="padding: 0 1.5rem 1.5rem;">
                         <div class="spec-card"><div class="label">Duration</div><div class="value">Full Day</div></div>
-                        <div class="spec-card"><div class="label">Max Group Size</div><div class="value">4</div></div>
-                        <div class="spec-card"><div class="label">Difficulty</div><div class="value">Beginner–Intermediate</div></div>
+                        <div class="spec-card"><div class="label">Max Group Size</div><div class="value">6</div></div>
+                        <div class="spec-card"><div class="label">Difficulty</div><div class="value">Intermediate</div></div>
                         <div class="spec-card"><div class="label">Prerequisites</div><div class="value">Comfortable on top-rope</div></div>
-                        <div class="spec-card"><div class="label">Location</div><div class="value">Red River Gorge, KY</div></div>
-                        <div class="spec-card"><div class="label">Certification</div><div class="value">AMGA SPI · WFR</div></div>
                     </div>
                 </div>
             </div>
@@ -208,54 +167,5 @@
     </footer>
 
     <script src="js/carousel.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBfbiTv37Tqd0AqFt4WPsSrSq5dbpa7IY&libraries=places&loading=async" async defer></script>
-    <script src="js/quote-widget.js"></script>
-    <script>
-        const IQ_CONFIGS = {
-            'intro': {
-                camper:   { name: 'Intro to Outdoor Climbing', halfDayBase: 160, halfDayAdditional: 30, fullDayBase: 220, fullDayAdditional: 50, secondGuideHalfDay: 200, secondGuideFullDay: 300 },
-                addons: [
-                    { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
-                ],
-                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
-            },
-            'sport-lead': {
-                camper:   { name: 'Sport Lead Climbing Clinic', halfDayBase: 160, halfDayAdditional: 30, fullDayBase: 220, fullDayAdditional: 50, secondGuideHalfDay: 200, secondGuideFullDay: 300 },
-                addons: [
-                    { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
-                ],
-                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
-            },
-            'trad-anchor': {
-                camper:   { name: 'Trad & Anchor Building', halfDayBase: 160, halfDayAdditional: 30, fullDayBase: 220, fullDayAdditional: 50, secondGuideHalfDay: 200, secondGuideFullDay: 300 },
-                addons: [
-                    { id: 'photographer', label: 'Photographer (if available)', halfDayPrice: 60, fullDayPrice: 100 },
-                ],
-                emailjs: { publicKey: 'z8OLy4eEgxpeaK5Jp', serviceId: 'service_jsho87g', templateId: 'template_rl4wku4' }
-            },
-        };
-
-        window.iqWidget = null;
-
-        function selectCamper(card, scroll) {
-            const key = card.dataset.camper;
-            document.querySelectorAll('.iq-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            const wrap = document.getElementById('iq-widget-wrap');
-            const widgetEl = document.getElementById('iq-widget');
-            widgetEl.innerHTML = '';
-            wrap.hidden = false;
-            if (scroll) wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            iqWidget = new QuoteWidget({ container: '#iq-widget', ...IQ_CONFIGS[key] });
-        }
-
-        document.querySelectorAll('.iq-card').forEach(card => {
-            card.addEventListener('click', () => selectCamper(card, true));
-        });
-
-        selectCamper(document.querySelector('.iq-card[data-camper="sport-lead"]'), false);
-    </script>
 </body>
 </html>

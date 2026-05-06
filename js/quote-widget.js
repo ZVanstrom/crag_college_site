@@ -348,7 +348,6 @@ class QuoteWidget {
         lines.push(`<div class="qw-line qw-total"><span>Total</span><span>$${totals.total.toLocaleString()}</span></div>`);
 
         lineItems.innerHTML = lines.join('');
-        codeBar.hidden = false;
         customer.hidden = false;
     }
 
@@ -402,7 +401,7 @@ class QuoteWidget {
         status.className = 'qw-status';
         try {
             await emailjs.send(this.config.emailjs.serviceId, this.config.emailjs.templateId, params);
-            status.textContent = '✓ Quote sent! Check your inbox. We'll be in touch shortly.';
+            status.textContent = "✓ Quote sent! Check your inbox. We'll be in touch shortly.";
             status.className = 'qw-status qw-success';
         } catch (err) {
             console.error('EmailJS error:', err);
