@@ -69,7 +69,7 @@ class QuoteWidget {
         this.container.innerHTML = `
             <div class="qw">
                 <div class="qw-header">
-                    <h2>Instant Quote Tool</h2>
+                    <h2>Quote Your Trip</h2>
                     <p>${this.config.camper.name}</p>
                 </div>
                 <div class="qw-form">
@@ -108,7 +108,7 @@ class QuoteWidget {
                 </div>
                 <div class="qw-customer" hidden>
                     <h3>Save your quote and get in touch!</h3>
-                    <p class="qw-customer-sub">Drop your email and we'll send the full breakdown — and follow up to lock in your date.</p>
+                    <p class="qw-customer-sub">Drop your email and we'll send the full breakdown and follow up to lock in your date.</p>
                     <div class="qw-customer-fields">
                         <input type="email" class="qw-input qw-email" placeholder="Email (required)" required>
                         <input type="text"  class="qw-input qw-name"  placeholder="Name (optional)">
@@ -195,15 +195,18 @@ class QuoteWidget {
 
     initFlatpickr() {
         if (typeof flatpickr === 'undefined') { console.error('QuoteWidget: flatpickr not loaded'); return; }
+        const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
         flatpickr(this.$('.qw-dates'), {
             mode: 'single',
             minDate: 'today',
+            defaultDate: tomorrow,
             dateFormat: 'M j, Y',
             onChange: (dates) => {
                 this.state.tripDate = dates[0] || null;
                 this.update();
             }
         });
+        this.state.tripDate = tomorrow;
     }
 
     initEmailJS() {
@@ -295,7 +298,7 @@ class QuoteWidget {
             groupNote.textContent = '7–12 climbers: second guide fee applies';
             groupNote.className = 'qw-helper qw-group-note qw-group-warn';
         } else {
-            groupNote.innerHTML = 'Groups larger than 12 — <a href="mailto:cragcollege@gmail.com" style="color:var(--accent);font-weight:600;">contact us</a> for a custom quote';
+            groupNote.innerHTML = 'Groups larger than 12: <a href="mailto:cragcollege@gmail.com" style="color:var(--accent);font-weight:600;">contact us</a> for a custom quote';
             groupNote.className = 'qw-helper qw-group-note qw-group-warn';
         }
 
@@ -321,7 +324,7 @@ class QuoteWidget {
         const { pricing } = totals;
         const lines = [];
 
-        lines.push(`<div class="qw-line"><span>${tripLabel} — 1st climber</span><span>$${pricing.base.toLocaleString()}</span></div>`);
+        lines.push(`<div class="qw-line"><span>${tripLabel} : 1st climber</span><span>$${pricing.base.toLocaleString()}</span></div>`);
         if (pricing.extraCount > 0) {
             lines.push(`<div class="qw-line"><span>+ ${pricing.extraCount} additional climber${pricing.extraCount !== 1 ? 's' : ''} × $${pricing.additional}</span><span>$${pricing.extraCost.toLocaleString()}</span></div>`);
         }
@@ -399,7 +402,7 @@ class QuoteWidget {
         status.className = 'qw-status';
         try {
             await emailjs.send(this.config.emailjs.serviceId, this.config.emailjs.templateId, params);
-            status.textContent = '✓ Quote sent! Check your inbox — we\'ll be in touch shortly.';
+            status.textContent = '✓ Quote sent! Check your inbox. We'll be in touch shortly.';
             status.className = 'qw-status qw-success';
         } catch (err) {
             console.error('EmailJS error:', err);
