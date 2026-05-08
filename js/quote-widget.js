@@ -404,6 +404,7 @@ class QuoteWidget {
             status.textContent = "✓ Quote sent! Check your inbox. We'll be in touch shortly.";
             status.className = 'qw-status qw-success';
             history.replaceState(null, '', '#booking-complete');
+            gtag('event', 'conversion', { 'send_to': 'AW-18144729913/4tFbCOnfyagcELm2isxD' });
         } catch (err) {
             console.error('EmailJS error:', err);
             status.textContent = 'Couldn\'t send. Please email cragcollege@gmail.com directly.';
