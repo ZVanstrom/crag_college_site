@@ -5,7 +5,6 @@
 * **Owner & Lead Guide:** Zakyre Vanstrom
 * **Registered Address:** 212 N. 2nd Street, Suite 100, Richmond, KY 40475
 * **Operating/Mailing Address:** 210 Brookside Dr, Stanton, KY 40380
-* **Phone:** (260) 205-9145
 * **Email:** cragcollege@gmail.com
 * **Payment Methods:** Stripe Invoicing, Check, Cash
 
